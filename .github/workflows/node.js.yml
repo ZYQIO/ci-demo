@@ -5,7 +5,7 @@ name: web deploy by ftp
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 # CI enviroment settings
 env:
   NODE_VERSION: "16.x"
@@ -41,17 +41,17 @@ jobs:
           npm -v
           pwd
           ls
-      # - name: 静态发布到ftp
-      #   uses: SamKirkland/FTP-Deploy-Action@4.0.0
-      #   with:
-      #     # `${{arg}}` is a template from which you set in `secrets` menu
-      #     # as `yml` file is follow .git upload to github ,`secrets` is to prevent your sensitive infomation from exposed to public
-      #     server: ${{ secrets.FTP_HOST }}
-      #     username: ${{ secrets.FTP_USERNAME }}
-      #     password: ${{ secrets.FTP_PASSWORD }}
-      #     port: ${{ secrets.FTP_HOST }}
-      #     local-dir: ./dist/
-      #     server-dir: /server/web/
+      - name: 静态发布到ftp
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          # `${{arg}}` is a template from which you set in `secrets` menu
+          # as `yml` file is follow .git upload to github ,`secrets` is to prevent your sensitive infomation from exposed to public
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_HOST }}
+          local-dir: ./dist/
+          server-dir: /server/web/
 
-      # - name: 完成
-      #   run: echo deploy by ftp
+      - name: 完成
+        run: echo deploy by ftp
