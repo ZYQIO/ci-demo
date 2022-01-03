@@ -44,9 +44,6 @@ jobs:
           ls
       - name: 静态发布到ftp
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
-        run: |
-          pwd
-          ls
         with:
           # `${{arg}}` is a template from which you set in `secrets` menu
           # as `yml` file is follow .git upload to github ,`secrets` is to prevent your sensitive infomation from exposed to public
