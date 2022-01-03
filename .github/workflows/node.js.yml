@@ -49,7 +49,7 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_HOST }}
+          port: ${{ secrets.FTP_PORT }}
           local-dir: ./dist/
           server-dir: /server/web/
 
