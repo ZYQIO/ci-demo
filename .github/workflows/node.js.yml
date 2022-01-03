@@ -1,0 +1,57 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: web deploy by ftp
+
+on:
+  push:
+    branches: [ main ]
+# CI enviroment settings
+env:
+  NODE_VERSION: "16.x"
+jobs:
+  build:
+    name: 构建,发布
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: 初始化 checkout
+      - name: 测试ci单行
+        run: echo Hello, world!
+      - name: 测试ci多行
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project,
+          node -v
+          npm -v
+          pwd
+          ls
+      - name: 使用 Node.js ${{ env.NODE_VERSION }} 构建包
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: 构建执行
+        run: |
+          node -v
+          npm -v
+          pwd
+          ls
+          npm install
+          node -v
+          npm -v
+          pwd
+          ls
+      # - name: 静态发布到ftp
+      #   uses: SamKirkland/FTP-Deploy-Action@4.0.0
+      #   with:
+      #     # `${{arg}}` is a template from which you set in `secrets` menu
+      #     # as `yml` file is follow .git upload to github ,`secrets` is to prevent your sensitive infomation from exposed to public
+      #     server: ${{ secrets.FTP_HOST }}
+      #     username: ${{ secrets.FTP_USERNAME }}
+      #     password: ${{ secrets.FTP_PASSWORD }}
+      #     port: ${{ secrets.FTP_HOST }}
+      #     local-dir: ./dist/
+      #     server-dir: /server/web/
+
+      # - name: 完成
+      #   run: echo deploy by ftp
