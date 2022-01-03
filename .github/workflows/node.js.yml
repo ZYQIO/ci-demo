@@ -9,13 +9,10 @@ on:
 env:
   NODE_VERSION: "16.x"
 jobs:
-  web-deploy:
-    name: web-deploy
-    running-on: ubuntu-latest
-    timeout-minutes: 15
   build:
     name: 构建,发布
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
         name: 初始化 checkout
