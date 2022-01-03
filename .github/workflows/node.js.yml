@@ -37,6 +37,7 @@ jobs:
           pwd
           ls
           npm install
+          npm build
           node -v
           npm -v
           pwd
