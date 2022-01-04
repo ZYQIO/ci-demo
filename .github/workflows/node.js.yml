@@ -6,8 +6,6 @@ on:
   push:
     branches: [main]
 # CI enviroment settings
-env:
-  NODE_VERSION: "16.x"
 jobs:
   build:
     name: 构建,发布
@@ -22,10 +20,8 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
 
-      - name: 使用 Node.js ${{ env.NODE_VERSION }} 构建包
+      - name: 使用 Node.js 构建包
         uses: actions/setup-node@v2
-        with:
-          node-version: ${{ env.NODE_VERSION }}
       - name: 构建执行
         run: |
           npm install
@@ -33,6 +29,40 @@ jobs:
           tar -zcvf dist.tgz dist
           pwd
           ls
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      # 上传构建结果
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./release.tgz
+          asset_name: release.tgz
+          asset_content_type: application/x-tgz
+      - name: 部署
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
+          script: |
+            cd /root/server/web
+            wget https://github.com/ZYQIO/ci-demo -O dist.tgz
+            tar zxvf dist.tgz
+            rm -rf web
+            mv dist web
       # - name: 静态发布到ftp
       #   # uses: SamKirkland/FTP-Deploy-Action@4.2.0
       #   # uses: wlixcc/SFTP-Deploy-Action@v1.0
