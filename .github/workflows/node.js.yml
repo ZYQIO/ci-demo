@@ -30,7 +30,7 @@ jobs:
         run: |
           npm install
           npm run build
-          tar -zcvf dist.tgz /dist
+          tar -zcvf dist.tgz dist
           pwd
           ls
       # - name: 静态发布到ftp
