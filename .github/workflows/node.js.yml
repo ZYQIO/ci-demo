@@ -35,9 +35,9 @@ jobs:
           pwd
           ls
       - name: 静态发布到ftp
-        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        # uses: SamKirkland/FTP-Deploy-Action@4.2.0
         # uses: wlixcc/SFTP-Deploy-Action@v1.0
-        # uses: airvzxf/ftp-deployment-action@latest
+        uses: airvzxf/ftp-deployment-action@latest
         with:
           # `${{arg}}` is a template from which you set in `secrets` menu
           # as `yml` file is follow .git upload to github ,`secrets` is to prevent your sensitive infomation from exposed to public
@@ -45,8 +45,9 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
-          local-dir: ./dist/
-          server-dir: /server/web/
+          local-dir: "./dist/"
+          # server-dir: /server/web/
+          server-remote_dir: "./server/web/"
 
       - name: 完成
         run: echo deploy by ftp
