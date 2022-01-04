@@ -21,7 +21,7 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-          
+
       - name: 使用 Node.js ${{ env.NODE_VERSION }} 构建包
         uses: actions/setup-node@v2
         with:
@@ -35,7 +35,9 @@ jobs:
           pwd
           ls
       - name: 静态发布到ftp
-        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        # uses: wlixcc/SFTP-Deploy-Action@v1.0
+        # uses: airvzxf/ftp-deployment-action@latest
         with:
           # `${{arg}}` is a template from which you set in `secrets` menu
           # as `yml` file is follow .git upload to github ,`secrets` is to prevent your sensitive infomation from exposed to public
