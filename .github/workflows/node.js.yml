@@ -59,7 +59,7 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           script: |
             cd /root/server/web
-            wget https://github.com/ZYQIO/ci-demo -O dist.tgz
+            wget https://github.com/ZYQIO/ci-demo/blob/main/dist.tgz -O dist.tgz
             tar zxvf dist.tgz
             rm -rf web
             mv dist web
