@@ -47,7 +47,7 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           local-dir: "./dist/"
           # server-dir: /server/web/
-          server-remote_dir: "./server/web/"
+          remote_dir: "./server/web/"
 
       - name: 完成
         run: echo deploy by ftp
