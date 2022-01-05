@@ -12,58 +12,72 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      # 下载 git submodule
+      - uses: srt32/git-actions@v0.0.3
+        with:
+          args: git submodule update --init --recursive
         name: 初始化 checkout
       - name: 测试ci单行
         run: echo Hello, world!
-      - name: 测试ci多行
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
-
       - name: 使用 Node.js 构建包
         uses: actions/setup-node@v2
+        with:
+          node-version: 10
       - name: 构建执行
+      # tar -zcvf dist.tgz dist
         run: |
           npm install
           npm run build
-          tar -zcvf dist.tgz dist
           pwd
           ls
-      # 发布
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-      # 上传构建结果
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./dist.tgz
-          asset_name: dist.tgz
-          asset_content_type: application/x-tgz
+          CI: true
+      # Deploy
       - name: 部署
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT }}
-          script: |
-            cd /root/server/web
-            wget https://github.com/ZYQIO/ci-demo/blob/main/dist.tgz -O dist.tgz
-            tar zxvf dist.tgz
-            rm -rf web
-            mv dist web
+        uses: easingthemes/ssh-deploy@v2.0.7
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN }}
+          ARGS: "-avz --delete"
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ secrets.FTP_HOST }}
+          REMOTE_USER: ${{ secrets.FTP_USERNAME }}
+          REMOTE_PORT: ${{ secrets.FTP_PORT }}
+          TARGET: "/server/web/"
+      # # 发布
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     draft: false
+      #     prerelease: false
+      # # 上传构建结果
+      # - name: Upload Release Asset
+      #   id: upload-release-asset 
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+      #     asset_path: ./dist.tgz
+      #     asset_name: dist.tgz
+      #     asset_content_type: application/x-tgz
+      # - name: 部署
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.FTP_HOST }}
+      #     username: ${{ secrets.FTP_USERNAME }}
+      #     password: ${{ secrets.FTP_PASSWORD }}
+      #     port: ${{ secrets.FTP_PORT }}
+      #     script: |
+      #       cd /root/server/web
+      #       wget https://github.com/ZYQIO/ci-demo/blob/main/dist.tgz -O dist.tgz
+      #       tar zxvf dist.tgz
+      #       rm -rf web
+      #       mv dist web
       # - name: 静态发布到ftp
       #   # uses: SamKirkland/FTP-Deploy-Action@4.2.0
       #   # uses: wlixcc/SFTP-Deploy-Action@v1.0
