@@ -19,8 +19,6 @@ jobs:
         run: echo Hello, world!
       - name: 使用 Node.js 构建包
         uses: actions/setup-node@v2
-        # with:
-        #   node-version: 10
       - name: 构建执行
         run: |
           npm install
